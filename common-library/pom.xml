@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- The <parent> block here is what links this module back to the
+         parent POM and pulls in its dependencyManagement and properties. -->
+    <parent>
+        <groupId>com.cropdeal</groupId>
+        <artifactId>cropdeal-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>common-library</artifactId>
+    <!-- packaging is "jar", not "pom" - this module produces a real
+         artifact (a .jar file) that other modules will depend on. -->
+    <packaging>jar</packaging>
+    <name>common-library</name>
+    <description>Shared DTOs, event contracts, and exceptions for CropDeal services</description>
+
+    <dependencies>
+        <!-- We need Jackson annotations (@JsonProperty etc.) for the DTOs,
+             but we deliberately do NOT pull in spring-boot-starter-web here.
+             common-library must stay a plain Java library with the lightest
+             possible dependency footprint, because EVERY service will carry
+             whatever this module depends on. If common-library accidentally
+             pulled in spring-boot-starter-web, that's harmless for services
+             that already have it, but it's dead weight and a smell - it
+             signals this module is doing more than "shared shapes". -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+
+        <!-- jakarta.validation annotations (@NotNull, @Email, etc.) so DTOs
+             can carry their own validation rules, which every service that
+             receives them then enforces consistently. -->
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>

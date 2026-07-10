@@ -1,0 +1,54 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        # Public Auth Service
+        - id: auth-service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/auth/**
+
+        # Farmer Service
+        - id: farmer-service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/farmers/**
+
+        # Dealer Service
+        - id: dealer-service
+          uri: http://localhost:8083
+          predicates:
+            - Path=/api/dealers/**
+
+        # Crop Service
+        - id: crop-service
+          uri: http://localhost:8084
+          predicates:
+            - Path=/api/crops/**
+
+        # Order Service
+        - id: order-service
+          uri: http://localhost:8085
+          predicates:
+            - Path=/api/orders/**
+
+        # Payment Service
+        - id: payment-service
+          uri: http://localhost:8086
+          predicates:
+            - Path=/api/payments/**
+
+        # Chatbot Service
+        - id: chatbot-service
+          uri: http://localhost:8087
+          predicates:
+            - Path=/api/chatbot/**
+
+# JWT Config
+jwt:
+  secret: cropdeal-super-secret-key-minimum-32-chars-long
