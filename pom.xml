@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- This identifies the parent project itself. Nothing gets deployed from
+         here directly - packaging is "pom", meaning this artifact's only job
+         is to describe and coordinate the modules listed below. -->
+    <groupId>com.cropdeal</groupId>
+    <artifactId>cropdeal-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>CropDeal Parent</name>
+    <description>Parent POM for the CropDeal microservices marketplace</description>
+
+    <!-- Every Spring Boot project inherits from spring-boot-starter-parent,
+         which pins compatible versions of hundreds of common libraries so you
+         never have to think "does Spring Web 3.2 work with Jackson 2.15?".
+         We inherit from it here, ONCE, at the parent level, so every child
+         module gets that version management for free without repeating it. -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.3.4</version>
+        <relativePath/>
+    </parent>
+
+    <!-- The modules list is what makes Maven treat this as a multi-module
+         reactor build. Running "mvn install" from this directory builds
+         every module below, in dependency order (Maven figures out that
+         e.g. auth-service depends on common-library and builds
+         common-library first automatically). -->
+    <modules>
+        <module>common-library</module>
+        <module>auth-service</module>
+      <module>farmer-service</module> 
+       <module>dealer-service</module>
+         <module>crop-service</module>
+         <module>order-service</module>
+        <module>payment-service</module>
+         <module>api-gateway</module>
+         <module>chatbot-service</module>
+    </modules>
+
+    <properties>
+        <java.version>17</java.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- Centralizing version numbers here means every module references
+             ${spring-cloud.version} instead of hardcoding it six times.
+             Bump the marketplace's Spring Cloud version in exactly one
+             place when you upgrade. -->
+        <spring-cloud.version>2023.0.3</spring-cloud.version>
+    </properties>
+
+    <!-- dependencyManagement (as opposed to plain <dependencies>) does NOT
+         add these dependencies to every module. It only declares "if a child
+         module asks for this artifact, use this version". Each child still
+         has to explicitly list the dependency it wants in its own pom.xml -
+         this just centralizes version numbers so they can't drift apart
+         between services. This is the standard pattern for keeping a
+         multi-module Spring Cloud project's library versions consistent. -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+</project>
